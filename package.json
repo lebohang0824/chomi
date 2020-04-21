@@ -1,0 +1,36 @@
+{
+  "name": "Chomi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-elements": "^1.2.7",
+    "react-native-gifted-chat": "^0.12.0",
+    "react-native-navigation": "^6.4.0",
+    "react-native-secure-key-store": "^2.0.5",
+    "react-native-touchable-scale": "^2.1.1",
+    "react-native-vector-icons": "^6.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/runtime": "^7.9.2",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "babel-jest": "^25.3.0",
+    "eslint": "^6.8.0",
+    "jest": "^25.3.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
