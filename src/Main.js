@@ -47,18 +47,17 @@ export default class Main extends React.Component {
 				this._session = res.data.session;
 				this.setState({ loading: false });
 				this._displayMessages(systemMessage('Send a message.', 1));
+				
+				Storage.get('name').then(name => {
+					this._updateMessages(
+						chatbotMessage(`Hey ${name}. ${res.data.greetings}`, this._messages.length)
+					);
 
-				// Linking user with session for better identification
-				this._linkUserToSession(this._name, res.data.session);
+					// Linking user with session for better identification
+					// this._linkUserToSession(this._name, res.data.session);
+				});
 			})
-		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));
-
-		Storage.get('name').then(name => {
-			this._name = name;
-			this._updateMessages(
-				chatbotMessage(`Hey ${name}. What would you like to know about coronavirus today?`, this._messages.length)
-			);
-		});
+		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));		
 	}
 
 	componentDidUpdate() {
@@ -73,7 +72,7 @@ export default class Main extends React.Component {
 			}).then(res => {
 				console.log('Success!');
 			})
-		.catch(err => this._displayMessages(systemMessage('Error detected', this._messages.length)));
+		.catch(err => console.log(err));
 	}
 
 	_messageReply(messageText) {
@@ -145,26 +144,7 @@ export default class Main extends React.Component {
 		);
 	}
 
-	_isActive(count) {
-		// Clear interval if exists
-		if (this._timer) clearInterval(this._timer);
-
-		// Proceed to timer if active
-		if (this._active) {
-			this._timer = setInterval(() => {
-				if (count == 300 && this._active) {
-					// Set to inactive
-					this._active = false
-					// Clear iterval
-					clearInterval(this._timer);
-					// Send message
-					this._displayMessages(systemMessage('Conversation closed!', this._messages.length));
-				}
-
-				console.log(count);
-				count++;
-			}, 1000);
-		}		
+	_isActive(count) {		
 	}
 
 	_footer(props) {
@@ -181,7 +161,7 @@ export default class Main extends React.Component {
 		return (
 			<View style={{ flex: 1, justifyContent: "center" }}>
 				<Image source={ require('./img.png') } style={{ alignSelf: 'center' }} />
-				<Text style={{ color: '#0084ff', alignSelf: 'center' }}>Loading</Text>
+				<Text style={{ color: '#0084ff', alignSelf: 'center' }}>Loading...</Text>
 			</View>
 		);
 	}
