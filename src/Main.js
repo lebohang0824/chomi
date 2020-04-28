@@ -45,6 +45,7 @@ export default class Main extends React.Component {
 		axios.post('https://wiki101.herokuapp.com/api/session')
 			.then(res => {
 				this._session = res.data.session;
+				this.setState({ loading: false });
 				this._displayMessages(systemMessage('Send a message.', 1));
 
 				// Linking user with session for better identification
