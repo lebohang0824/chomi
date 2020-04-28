@@ -45,7 +45,6 @@ export default class Main extends React.Component {
 		axios.post('https://wiki101.herokuapp.com/api/session')
 			.then(res => {
 				this._session = res.data.session;
-<<<<<<< HEAD
 				this._displayMessages(systemMessage('Send a message.', 1));
 
 				// Linking user with session for better identification
@@ -59,18 +58,6 @@ export default class Main extends React.Component {
 				chatbotMessage(`Hey ${name}. What would you like to know about coronavirus today?`, this._messages.length)
 			);
 		});
-=======
-				this.setState({ loading: false });
-				this._displayMessages(systemMessage('Send a message.', 1))
-
-				Storage.get('name').then(name => {
-					this._updateMessages(
-						chatbotMessage(`Hey ${name}. ${res.data.greetings}`, this._messages.length)
-					);
-				});
-			})
-		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));		
->>>>>>> master
 	}
 
 	componentDidUpdate() {
