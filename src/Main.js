@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Image, Animated, ActivityIndicator, Text } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 // Service
@@ -19,7 +19,7 @@ export default class Main extends React.Component {
 
 		// State
 		this.state = {
-			messages: [], typing: false
+			messages: [], typing: false, loading: true
 		}		
 
 		// Private properties
@@ -44,15 +44,16 @@ export default class Main extends React.Component {
 		axios.post('https://wiki101.herokuapp.com/api/session')
 			.then(res => {
 				this._session = res.data.session;
+				this.setState({ loading: false });
 				this._displayMessages(systemMessage('Send a message.', 1))
-			})
-		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));
 
-		Storage.get('name').then(name => {
-			this._updateMessages(
-				chatbotMessage(`Hey ${name}. What would you like to know about coronavirus today?`, this._messages.length)
-			);
-		});
+				Storage.get('name').then(name => {
+					this._updateMessages(
+						chatbotMessage(`Hey ${name}. ${res.data.greetings}`, this._messages.length)
+					);
+				});
+			})
+		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));		
 	}
 
 	componentDidUpdate() {
@@ -161,9 +162,18 @@ export default class Main extends React.Component {
 		});
 	}
 
+	_viewSplash() {
+		return (
+			<View style={{ flex: 1, justifyContent: "center" }}>
+				<Image source={ require('./img.png') } style={{ alignSelf: 'center' }} />
+				<Text style={{ color: '#0084ff', alignSelf: 'center' }}>Loading</Text>
+			</View>
+		);
+	}
+
 	render() {
 		return (
-			<GiftedChat 
+			!this.state.loading && <GiftedChat 
 				user={{ _id: 1 }}
 				isAnimated={false}
 				alwaysShowSend={true}
@@ -173,7 +183,7 @@ export default class Main extends React.Component {
 				onQuickReply={this._onQuickReply}
 				renderSend={props => <SendButton {...props} />}
 				renderInputToolbar={props => <Toolbar {...props} />}
-			/>
+			/> || this._viewSplash()
 		);
 	}
 }
