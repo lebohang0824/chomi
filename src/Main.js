@@ -38,17 +38,22 @@ export default class Main extends React.Component {
 		this._messageReply = this._messageReply.bind(this);
 		this._updateMessages = this._updateMessages.bind(this);
 		this._displayMessages = this._displayMessages.bind(this);
+		this._linkUserToSession = this._linkUserToSession.bind(this);
 	}
 
 	componentDidMount() {
 		axios.post('https://wiki101.herokuapp.com/api/session')
 			.then(res => {
 				this._session = res.data.session;
-				this._displayMessages(systemMessage('Send a message.', 1))
+				this._displayMessages(systemMessage('Send a message.', 1));
+
+				// Linking user with session for better identification
+				this._linkUserToSession(this._name, res.data.session);
 			})
 		.catch(err => this._displayMessages(systemMessage('Error detected', 1)));
 
 		Storage.get('name').then(name => {
+			this._name = name;
 			this._updateMessages(
 				chatbotMessage(`Hey ${name}. What would you like to know about coronavirus today?`, this._messages.length)
 			);
@@ -60,6 +65,16 @@ export default class Main extends React.Component {
 	}
 
 	// Private methods
+	_linkUserToSession(name, session) {
+		axios.post('https://wiki101.herokuapp.com/api/database/link-users',{
+				name: name,
+				session: session
+			}).then(res => {
+				console.log('Success!');
+			})
+		.catch(err => this._displayMessages(systemMessage('Error detected', this._messages.length)));
+	}
+
 	_messageReply(messageText) {
 		axios.post('https://wiki101.herokuapp.com/api/message', {
 				session: this._session, 
